@@ -1,4 +1,4 @@
-package apps.monkpad.kiddoguard.ui.components
+package apps.monkpad.kiddoguard.presenter.ui.components
 
 import android.app.WallpaperManager
 import androidx.compose.foundation.Image

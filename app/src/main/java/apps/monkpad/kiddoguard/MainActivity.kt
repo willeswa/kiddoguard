@@ -15,11 +15,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import apps.monkpad.kiddoguard.data.AppPreferences
 import apps.monkpad.kiddoguard.models.AppInfo
-import apps.monkpad.kiddoguard.ui.screens.AppSelectionScreen
-import apps.monkpad.kiddoguard.ui.screens.HomeScreen
-import apps.monkpad.kiddoguard.ui.theme.KiddoGuardTheme
+import apps.monkpad.kiddoguard.presenter.ui.screens.AppSelectionScreen
+import apps.monkpad.kiddoguard.presenter.ui.screens.HomeScreen
+import apps.monkpad.kiddoguard.presenter.ui.theme.KiddoGuardTheme
 import apps.monkpad.kiddoguard.utils.getInstalledApps
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
 
@@ -34,21 +36,14 @@ class MainActivity : ComponentActivity() {
         }
 
         enableImmersiveMode()
+        dimScreenBrightness()
 
         setContent {
             KiddoGuardTheme {
-                val context = LocalContext.current
-                val pm = context.packageManager
-                var allApps by remember { mutableStateOf(listOf<AppInfo>()) }
-                var selectedApps by remember {
-                    mutableStateOf(
-                        AppPreferences.getSelectedApps(context).toMutableSet()
-                    )
-                }
+
                 var loading by remember { mutableStateOf(true) }
 
                 LaunchedEffect(Unit) {
-                    allApps = getInstalledApps(pm)
                     loading = false // Set loading to false once apps are loaded
                 }
 
@@ -58,30 +53,14 @@ class MainActivity : ComponentActivity() {
                 NavHost(navController = navController, startDestination = "home") {
                     composable("home") {
                         HomeScreen(
-                            apps = allApps.filter { selectedApps.contains(it.packageName) },
                             onAppClick = { app -> launchApp(app) },
                             onNavigateToAppSelection = { navController.navigate("app_selection") },
                             onExitBabyMode = { clearDefaultLauncherAndExit() },
-                            loading = loading
                         )
                     }
                     composable("app_selection") {
                         AppSelectionScreen(
-                            allApps = allApps,
-                            selectedApps = selectedApps,
-                            onAppSelected = { packageName ->
-                                selectedApps = (selectedApps + packageName) as MutableSet<String>
-                                AppPreferences.saveSelectedApps(context, selectedApps)
-                            },
-                            onAppDeselected = { packageName ->
-                                selectedApps = (selectedApps - packageName) as MutableSet<String>
-                                AppPreferences.saveSelectedApps(context, selectedApps)
-                            },
-                            onSearchQueryChanged = { query ->
-                                allApps = getInstalledApps(pm).filter {
-                                    it.name.contains(query, ignoreCase = true)
-                                }
-                            },
+
                             navController = navController
                         )
                     }
@@ -102,6 +81,7 @@ class MainActivity : ComponentActivity() {
         if (hasFocus) {
             // Re-enable immersive mode whenever window gains focus
             enableImmersiveMode()
+
         }
     }
 
@@ -149,6 +129,14 @@ class MainActivity : ComponentActivity() {
                         or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 )
     }
+
+    private fun dimScreenBrightness() {
+        // Adjust the screen brightness to 30% of the maximum level
+        val layoutParams = window.attributes
+        layoutParams.screenBrightness = 0.01f // Adjust this value for desired brightness
+        window.attributes = layoutParams
+    }
+
 
 
 }

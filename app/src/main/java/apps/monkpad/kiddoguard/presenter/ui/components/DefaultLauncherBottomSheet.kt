@@ -1,4 +1,4 @@
-package apps.monkpad.kiddoguard.ui.components
+package apps.monkpad.kiddoguard.presenter.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*

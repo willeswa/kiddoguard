@@ -1,9 +1,11 @@
-package apps.monkpad.kiddoguard.ui.components
+package apps.monkpad.kiddoguard.presenter.ui.components
 
 import android.graphics.drawable.Drawable
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,21 +26,23 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import apps.monkpad.kiddoguard.ui.theme.SkyBlue
-import apps.monkpad.kiddoguard.ui.theme.Peach
+import apps.monkpad.kiddoguard.presenter.ui.theme.SkyBlue
+import apps.monkpad.kiddoguard.presenter.ui.theme.Peach
 import apps.monkpad.kiddoguard.R
 import apps.monkpad.kiddoguard.utils.drawableToImageBitmap
 
 @Composable
 fun AppListItem(
     appName: String,
-    appIcon: Drawable,
+    appIcon:  Drawable,
     isAdded: Boolean,
-    onAddOrRemoveClick: () -> Unit
+    onAddOrRemoveClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
+            .clickable{onAddOrRemoveClick()}
             .background(
                 color = Color.White,
                 shape = CircleShape
@@ -48,7 +52,7 @@ fun AppListItem(
                 color = if (isAdded) Peach else SkyBlue,
                 shape = CircleShape
             )
-            .padding(8.dp),
+            .padding(vertical = 8.dp, horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -56,29 +60,28 @@ fun AppListItem(
         Image(
             bitmap = drawableToImageBitmap(appIcon),
             contentDescription = null,
-            modifier = Modifier.size(48.dp),  // Icon size
+            modifier = modifier.size(48.dp),  // Icon size
             contentScale = ContentScale.Crop
         )
 
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = modifier.width(16.dp))
 
         // App Name
         Text(
             text = appName,
             fontSize = 18.sp,
             color = Color.Black,
-            modifier = Modifier.weight(1f)
+            modifier = modifier.weight(1f)
         )
 
-        // Add/Check Icon Button
-        IconButton(onClick = onAddOrRemoveClick) {
+
             Icon(
                 imageVector = if(isAdded) Icons.Default.Check else Icons.Default.Add,
                 contentDescription = if (isAdded) "Added" else "Add",
                 tint = if (isAdded) Peach else SkyBlue,
                 modifier = Modifier.size(24.dp)
             )
-        }
+
     }
 }
 

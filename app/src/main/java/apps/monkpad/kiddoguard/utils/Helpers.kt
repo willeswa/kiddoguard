@@ -42,3 +42,4 @@ fun getCurrentWallpaper(context: Context): ImageBitmap? {
 fun drawableToImageBitmap(drawable: Drawable): ImageBitmap {
     return drawable.toBitmap().asImageBitmap()
 }
+

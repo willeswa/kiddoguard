@@ -1,4 +1,4 @@
-package apps.monkpad.kiddoguard.ui.theme
+package apps.monkpad.kiddoguard.presenter.ui.theme
 
 import android.app.Activity
 import android.os.Build

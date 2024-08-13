@@ -1,4 +1,4 @@
-package apps.monkpad.kiddoguard.ui.theme
+package apps.monkpad.kiddoguard.presenter.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
